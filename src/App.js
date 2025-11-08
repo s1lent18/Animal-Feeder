@@ -5,7 +5,7 @@ import "./App.css";
 function App() {
   const [activeModule, setActiveModule] = useState(null); // track which module is ON
 
-  const ESP_IP = "https://concludingly-unempty-david.ngrok-free.dev:5000"; // Change this to your ESP’s IP address
+  const ESP_IP = "https://concludingly-unempty-david.ngrok-free.dev"; // Change this to your ESP’s IP address
 
   const toggleModule = async (module) => {
   const newState = activeModule === module ? null : module;
