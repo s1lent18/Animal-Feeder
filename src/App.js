@@ -5,29 +5,25 @@ import "./App.css";
 function App() {
   const [activeModule, setActiveModule] = useState(null); // track which module is ON
 
-  const ESP_IP = "http://192.168.100.50"; // Change this to your ESP’s IP address
+  const ESP_IP = "https://concludingly-unempty-david.ngrok-free.dev:5000"; // Change this to your ESP’s IP address
 
   const toggleModule = async (module) => {
-    // If clicked module is already on, turn it off
-    const newState = activeModule === module ? null : module;
-    setActiveModule(newState);
+  const newState = activeModule === module ? null : module;
+  setActiveModule(newState);
 
-    try {
-      // Turn the clicked module on or off
-      await fetch(`${ESP_IP}/${module}?state=${newState === module ? "on" : "off"}`);
+  try {
+    const command = { module, state: newState === module ? "on" : "off" };
 
-      // If turning on a new module, turn off others
-      if (newState === module) {
-        const otherModules = ["time-interval", "sound", "motor"].filter((m) => m !== module);
-        for (const other of otherModules) {
-          await fetch(`${ESP_IP}/${other}?state=off`);
-        }
-      }
-    } catch (error) {
-      console.error(`Error toggling ${module}:`, error);
-      alert("Failed to connect to ESP module. Check network connection.");
-    }
-  };
+    await fetch(`${ESP_IP}/command`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(command),
+    });
+  } catch (error) {
+    console.error(`Error toggling ${module}:`, error);
+    alert("Failed to connect to relay server. Check if it's running.");
+  }
+};
 
   return (
     <div className="App">
